@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C++: cl.exe build exe",
+			"command": "cl.exe",
+			"args": [
+				"/EHsc",
+				"/W0",
+				"/nologo",
+				"/LD",
+				"/Fe${workspaceFolder}\\bin\\kfbypass.asi",
+				"${workspaceFolder}\\src\\*.cpp"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+			"detail": "compiler: cl.exe"
+		}
+	]
+}
