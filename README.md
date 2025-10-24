@@ -10,4 +10,4 @@ Download the [latest release](https://github.com/LebiFur/kfbypass/releases/lates
 You can enable or disable dlc unlocking feature in `kfbypass.ini`.
 
 ## Known issues
-With dlc unlocking enabled using any dlc character will crash the game and subsequently crash on start up. Delete the character line in user.ini to recover. For now the dlc unlocking feature is only meant for dlc weapons.
+With dlc unlocking enabled using any dlc character will crash the game and subsequently crash on start up. Delete the character line in `user.ini` to recover. For now the dlc unlocking feature is only meant for dlc weapons.
