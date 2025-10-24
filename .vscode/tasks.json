@@ -7,10 +7,11 @@
 			"command": "cl.exe",
 			"args": [
 				"/EHsc",
-				"/W0",
+				"/W2",
 				"/nologo",
 				"/LD",
 				"/Fe${workspaceFolder}\\bin\\kfbypass.asi",
+				"/I${workspaceFolder}\\include",
 				"${workspaceFolder}\\src\\*.cpp"
 			],
 			"options": {

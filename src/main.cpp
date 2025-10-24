@@ -1,45 +1,53 @@
 #include <Windows.h>
+#include <inicpp.hpp>
 
-HANDLE handle = 0;
-
-void WriteNops(void* address, size_t offset, size_t length)
+void WriteNops(HANDLE handle, char *address, size_t length)
 {
-    byte* bytes = new byte[length];
-    for (size_t i = 0; i < length; i++) bytes[i] = 0x90;
-    
-    WriteProcessMemory(handle, (byte*)address + offset, bytes, length, 0);
+    char *bytes = new char[length];
+
+    memset(bytes, 0x90, length);
+
+    WriteProcessMemory(handle, address, bytes, length, 0);
+
+    delete[] bytes;
 }
 
-void Write(void* address, size_t offset, byte value)
+void Write(HANDLE handle, char *address, const char *bytes, size_t length)
 {
-    WriteProcessMemory(handle, (byte*)address + offset, &value, 1, 0);
+    WriteProcessMemory(handle, address, bytes, length, 0);
 }
 
 void Start()
 {
-    handle = GetCurrentProcess();
-    void* engine = (void*)GetModuleHandleA("Engine.dll");
+    inicpp::IniManager config("kfbypass.ini");
+    bool unlockDlcs = config["config"]["unlockDlcs"];
+    config["config"]["unlockDlcs"] = unlockDlcs;
+
+    HANDLE handle = GetCurrentProcess();
+    char *engine = (char *)GetModuleHandleA("Engine.dll");
 
     //Engine.ASteamStatsAndAchievementsBase::execFlushStatToSteamInt
-    WriteNops(engine, 0x000BF390 + 0xE4, 6);
+    WriteNops(handle, engine + 0x000BF390 + 0xE4, 6);
 
     //Engine.ASteamStatsAndAchievementsBase::execFlushStatToSteamFloat
-    WriteNops(engine, 0x000BF5D0 + 0xE4, 6);
+    WriteNops(handle, engine + 0x000BF5D0 + 0xE4, 6);
 
     //Engine.ASteamStatsAndAchievementsBase::execFlushStatsToSteamDatabase
-    WriteNops(engine, 0x000BFAD0 + 0x55, 2);
+    WriteNops(handle, engine + 0x000BFAD0 + 0x55, 2);
 
     //Engine.ASteamStatsAndAchievementsBase::FlushAchievementToSteam
-    WriteNops(engine, 0x000BD250 + 0x37, 6);
+    WriteNops(handle, engine + 0x000BD250 + 0x37, 6);
 
-    //Engine.Trip_Steam::IsDLCAvailable
-    Write(engine, 0x0024D860, 0xC2);
-    Write(engine, 0x0024D860 + 1, 0x01);
-    Write(engine, 0x0024D860 + 2, 0x00);
-    WriteNops(engine, 0x0024D860 + 3, 26);
+    if (unlockDlcs)
+    {
+        //Engine.Trip_Steam::IsDLCAvailable
+        const char bytes[] = { (char)0xC2, (char)0x01, (char)0x00 };
+        Write(handle, engine + 0x0024D860, bytes, 3);
+        WriteNops(handle, engine + 0x0024D860 + 3, 26);
+    }
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID a)
 {
     switch(dwReason)
     { 
