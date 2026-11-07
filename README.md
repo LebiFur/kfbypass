@@ -11,3 +11,11 @@ You can enable or disable dlc unlocking feature in `kfbypass.ini`.
 
 ## Known issues
 With dlc unlocking enabled using any dlc character will crash the game and subsequently crash on start up. Delete the character line in `user.ini` to recover. For now the dlc unlocking feature is only meant for dlc weapons.
+
+## Building
+
+### Prerequisites
+- Visual Studio with MSVC
+- Visual Studio Code
+
+Open `x64 Native Tools Command Prompt for VS 2022`(or whatever other version you have), cd to the project's directory and open VS Code using `code .` and run the build task.
